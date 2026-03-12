@@ -1,0 +1,21 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          echo "::group::Build Info"
+          echo "Repository: ${{ github.repository }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "::endgroup::"
+          echo "Building application..."
+          sleep 5
+          echo "Build complete!"

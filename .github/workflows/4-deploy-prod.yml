@@ -1,0 +1,32 @@
+name: Deploy Prod
+
+on:
+  workflow_run:
+    workflows: ["Deploy QA"]
+    types: [completed]
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Deploy to Prod
+        run: |
+          echo "::group::Trigger Info"
+          echo "Triggered by: ${{ github.event.workflow_run.name }} #${{ github.event.workflow_run.run_number }}"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "::endgroup::"
+          echo "Deploying to production..."
+          sleep 5
+          echo "Production deployment complete!"
+
+  skip:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    steps:
+      - name: Skip
+        run: echo "QA deployment failed — skipping prod deployment (conclusion: ${{ github.event.workflow_run.conclusion }})"

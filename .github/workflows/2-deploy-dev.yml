@@ -1,0 +1,32 @@
+name: Deploy Dev
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types: [completed]
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Deploy to Dev
+        run: |
+          echo "::group::Trigger Info"
+          echo "Triggered by: ${{ github.event.workflow_run.name }} #${{ github.event.workflow_run.run_number }}"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "::endgroup::"
+          echo "Deploying to dev environment..."
+          sleep 5
+          echo "Dev deployment complete!"
+
+  skip:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    steps:
+      - name: Skip
+        run: echo "Build failed — skipping dev deployment (conclusion: ${{ github.event.workflow_run.conclusion }})"

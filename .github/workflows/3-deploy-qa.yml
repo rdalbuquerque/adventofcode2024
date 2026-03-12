@@ -1,0 +1,32 @@
+name: Deploy QA
+
+on:
+  workflow_run:
+    workflows: ["Deploy Dev"]
+    types: [completed]
+
+jobs:
+  deploy-qa:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Deploy to QA
+        run: |
+          echo "::group::Trigger Info"
+          echo "Triggered by: ${{ github.event.workflow_run.name }} #${{ github.event.workflow_run.run_number }}"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "::endgroup::"
+          echo "Deploying to QA environment..."
+          sleep 5
+          echo "QA deployment complete!"
+
+  skip:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    steps:
+      - name: Skip
+        run: echo "Dev deployment failed — skipping QA deployment (conclusion: ${{ github.event.workflow_run.conclusion }})"
