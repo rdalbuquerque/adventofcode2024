@@ -29,4 +29,4 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion != 'success' }}
     steps:
       - name: Skip
-        run: echo "Build failed — skipping dev deployment (conclusion: ${{ github.event.workflow_run.conclusion }})"
+        run: echo "Build failed - skipping dev deployment (conclusion ${{ github.event.workflow_run.conclusion }})"
