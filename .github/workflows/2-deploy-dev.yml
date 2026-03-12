@@ -1,4 +1,5 @@
 name: Deploy Dev
+run-name: "Deploy Dev (${{ github.event.workflow_run.head_sha }})"
 
 on:
   workflow_run:
