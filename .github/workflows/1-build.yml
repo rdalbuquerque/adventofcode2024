@@ -1,5 +1,4 @@
 name: Build
-run-name: "Build (${{ format('{0}', github.sha) }})"
 
 on:
   push:
