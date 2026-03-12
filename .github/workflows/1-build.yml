@@ -17,5 +17,5 @@ jobs:
           echo "Branch: ${{ github.ref_name }}"
           echo "::endgroup::"
           echo "Building application..."
-          sleep 5
+          sleep 3
           echo "Build complete!"
