@@ -1,0 +1,33 @@
+name: Deploy UAT
+run-name: "Deploy UAT (${{ github.event.workflow_run.head_sha }})"
+
+on:
+  workflow_run:
+    workflows: ["Deploy QA"]
+    types: [completed]
+
+jobs:
+  deploy-uat:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - name: Deploy to UAT
+        run: |
+          echo "::group::Trigger Info"
+          echo "Triggered by: ${{ github.event.workflow_run.name }} #${{ github.event.workflow_run.run_number }}"
+          echo "Commit: ${{ github.event.workflow_run.head_sha }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "::endgroup::"
+          echo "Deploying to UAT environment..."
+          sleep 5
+          echo "UAT deployment complete!"
+
+  skip:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    steps:
+      - name: Skip
+        run: echo "QA deployment failed - skipping UAT deployment (conclusion ${{ github.event.workflow_run.conclusion }})"

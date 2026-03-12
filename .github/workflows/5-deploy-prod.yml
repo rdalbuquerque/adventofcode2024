@@ -3,7 +3,7 @@ run-name: "Deploy Prod (${{ github.event.workflow_run.head_sha }})"
 
 on:
   workflow_run:
-    workflows: ["Deploy QA"]
+    workflows: ["Deploy UAT"]
     types: [completed]
 
 jobs:
@@ -30,4 +30,4 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion != 'success' }}
     steps:
       - name: Skip
-        run: echo "QA deployment failed - skipping prod deployment (conclusion ${{ github.event.workflow_run.conclusion }})"
+        run: echo "UAT deployment failed - skipping prod deployment (conclusion ${{ github.event.workflow_run.conclusion }})"
